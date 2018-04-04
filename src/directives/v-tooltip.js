@@ -74,6 +74,8 @@ export const defaultOptions = {
 		defaultPopperOptions: {},
 		// Hides if clicked outside of popover
 		defaultAutoHide: true,
+		// Hides if mouse moves over the popover
+		defaultHideOnMouseover: false,
 		// Update popper on content resize
 		defaultHandleResize: true,
 	},

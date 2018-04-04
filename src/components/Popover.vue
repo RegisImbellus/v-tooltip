@@ -125,6 +125,10 @@ export default {
 			type: Boolean,
 			default: () => directive.options.popover.defaultAutoHide,
 		},
+		hideOnMouseover: {
+			type: Boolean,
+			default: () => directive.options.popover.defaultHideOnMouseover,
+		},
 		handleResize: {
 			type: Boolean,
 			default: () => directive.options.popover.defaultHandleResize,
@@ -430,6 +434,7 @@ export default {
 
 		$_addEventListeners () {
 			const reference = this.$refs.trigger
+			const popoverNode = this.$refs.popover
 			const directEvents = []
 			const oppositeEvents = []
 
@@ -457,6 +462,16 @@ export default {
 					break
 				}
 			})
+
+			if (this.hideOnMouseover) {
+				this.$_popoverMouseover = event => {
+					if (event.usedByTooltip) {
+						return
+					}
+					this.hide({ event: event })
+				}
+				popoverNode.addEventListener('mouseover', this.$_popoverMouseover)
+			}
 
 			// schedule show tooltip
 			directEvents.forEach(event => {
@@ -558,6 +573,12 @@ export default {
 				reference.removeEventListener(event, func)
 			})
 			this.$_events = []
+
+			if(this.$_popoverMouseover != undefined) {
+				const popoverNode = this.$refs.popover
+				popoverNode.removeEventListener('mouseover', this.$_popoverMouseover)
+				delete this.$_popoverMouseover
+			}
 		},
 
 		$_updatePopper (cb) {
